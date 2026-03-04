@@ -6,57 +6,99 @@
 #include <iostream>
 
 
-//when multiple attribute blocks present, linked as a ll
 
-int main(int argc, char *argv[]) {
+/*<----------------------stage 3 code----------------------->*/
+int main(){
     Disk disk_run;
+    StaticBuffer buffer;
+    OpenRelTable cache;
 
-    RecBuffer relCatBuffer(RELCAT_BLOCK);
-    HeadInfo relCatHeader;
-    relCatBuffer.getHeader(&relCatHeader);
+    RelCatEntry relCatEntry;
+    AttrCatEntry attrCatEntry;
 
-    for (int i = 0; i < relCatHeader.numEntries; i++) {
+    for(int i=0;i<=1; i++){
+        RelCacheTable::getRelCatEntry(i, &relCatEntry);
 
-        Attribute relCatRecord[RELCAT_NO_ATTRS];
-        relCatBuffer.getRecord(relCatRecord, i);
+        printf("Relation: %s\n",relCatEntry.relName);
 
-        printf("Relation: %s\n",
-               relCatRecord[RELCAT_REL_NAME_INDEX].sVal);
+        for(int j=0; j< relCatEntry.numAttrs;j++){
+            AttrCacheTable:: getAttrCatEntry(i,j,&attrCatEntry);
 
-        // ---- Attribute catalog traversal (MULTI-BLOCK) ----
-        int currBlock = ATTRCAT_BLOCK;
+            printf(" %s: ",attrCatEntry.attrName);
 
-        while (currBlock != -1) {
-
-            RecBuffer attrCatBuffer(currBlock);
-            HeadInfo attrHead;
-            attrCatBuffer.getHeader(&attrHead);
-
-            for (int j = 0; j < attrHead.numEntries; j++) {
-
-                Attribute attrCatRecord[ATTRCAT_NO_ATTRS];
-                attrCatBuffer.getRecord(attrCatRecord, j);
-
-                if (strcmp(attrCatRecord[ATTRCAT_REL_NAME_INDEX].sVal,relCatRecord[RELCAT_REL_NAME_INDEX].sVal) == 0) {
-
-                    const char *attrType =
-                        (attrCatRecord[ATTRCAT_ATTR_TYPE_INDEX].nVal == NUMBER)
-                        ? "NUM"
-                        : "STR";
-
-                    printf("  %s: %s\n",attrCatRecord[ATTRCAT_ATTR_NAME_INDEX].sVal,attrType);
-                }
+            if(attrCatEntry.attrType == NUMBER){
+                printf("NUM\n");
+            }else if(attrCatEntry.attrType == STRING){
+                printf("STR\n");
             }
-
-            // move to next attribute catalog block
-            currBlock = attrHead.rblock;
         }
-
         printf("\n");
     }
 
     return 0;
 }
+
+
+
+
+
+
+
+
+/*<----------------stage 2 exercises-------------------->*/
+
+// //when multiple attribute blocks present, linked as a ll
+// //stage 2 exercises and example
+// int main(int argc, char *argv[]) {
+//     Disk disk_run;
+//     StaticBuffer buffer;
+
+//     RecBuffer relCatBuffer(RELCAT_BLOCK);
+//     HeadInfo relCatHeader;
+//     relCatBuffer.getHeader(&relCatHeader);
+
+//     for (int i = 0; i < relCatHeader.numEntries; i++) {
+
+//         Attribute relCatRecord[RELCAT_NO_ATTRS];
+//         relCatBuffer.getRecord(relCatRecord, i);
+
+//         printf("Relation: %s\n",
+//                relCatRecord[RELCAT_REL_NAME_INDEX].sVal);
+
+//         // ---- Attribute catalog traversal (MULTI-BLOCK) ----
+//         int currBlock = ATTRCAT_BLOCK;
+
+//         while (currBlock != -1) {
+
+//             RecBuffer attrCatBuffer(currBlock);
+//             HeadInfo attrHead;
+//             attrCatBuffer.getHeader(&attrHead);
+
+//             for (int j = 0; j < attrHead.numEntries; j++) {
+
+//                 Attribute attrCatRecord[ATTRCAT_NO_ATTRS];
+//                 attrCatBuffer.getRecord(attrCatRecord, j);
+
+//                 if (strcmp(attrCatRecord[ATTRCAT_REL_NAME_INDEX].sVal,relCatRecord[RELCAT_REL_NAME_INDEX].sVal) == 0) {
+
+//                     const char *attrType =
+//                         (attrCatRecord[ATTRCAT_ATTR_TYPE_INDEX].nVal == NUMBER)
+//                         ? "NUM"
+//                         : "STR";
+
+//                     printf("  %s: %s\n",attrCatRecord[ATTRCAT_ATTR_NAME_INDEX].sVal,attrType);
+//                 }
+//             }
+
+//             // move to next attribute catalog block
+//             currBlock = attrHead.rblock;
+//         }
+
+//         printf("\n");
+//     }
+
+//     return 0;
+// }
 
 
 
@@ -110,7 +152,7 @@ int main(int argc, char *argv[]) {
 
 
 
-
+/*<---------------stage 1--------------------->*/
 // int main(int argc, char *argv[])
 // {
 //   /* Initialize the Run Copy of Disk */
