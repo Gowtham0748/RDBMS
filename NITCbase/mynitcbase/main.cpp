@@ -6,37 +6,54 @@
 #include <iostream>
 
 
+/*<----------------Stage 4---------------->*/
+
+int main(int argc, char *argv[]) {
+  Disk disk_run;
+  StaticBuffer buffer;
+  OpenRelTable cache;
+
+  return FrontendInterface::handleFrontend(argc, argv);
+}
+
+
+
+
+
+
+
+
 
 /*<----------------------stage 3 code----------------------->*/
-int main(){
-    Disk disk_run;
-    StaticBuffer buffer;
-    OpenRelTable cache;
+// int main(){
+//     Disk disk_run;
+//     StaticBuffer buffer;
+//     OpenRelTable cache;
 
-    RelCatEntry relCatEntry;
-    AttrCatEntry attrCatEntry;
+//     RelCatEntry relCatEntry;
+//     AttrCatEntry attrCatEntry;
 
-    for(int i=0;i<=1; i++){
-        RelCacheTable::getRelCatEntry(i, &relCatEntry);
+//     for(int i=0;i<=1; i++){
+//         RelCacheTable::getRelCatEntry(i, &relCatEntry);
 
-        printf("Relation: %s\n",relCatEntry.relName);
+//         printf("Relation: %s\n",relCatEntry.relName);
 
-        for(int j=0; j< relCatEntry.numAttrs;j++){
-            AttrCacheTable:: getAttrCatEntry(i,j,&attrCatEntry);
+//         for(int j=0; j< relCatEntry.numAttrs;j++){
+//             AttrCacheTable:: getAttrCatEntry(i,j,&attrCatEntry);
 
-            printf(" %s: ",attrCatEntry.attrName);
+//             printf(" %s: ",attrCatEntry.attrName);
 
-            if(attrCatEntry.attrType == NUMBER){
-                printf("NUM\n");
-            }else if(attrCatEntry.attrType == STRING){
-                printf("STR\n");
-            }
-        }
-        printf("\n");
-    }
+//             if(attrCatEntry.attrType == NUMBER){
+//                 printf("NUM\n");
+//             }else if(attrCatEntry.attrType == STRING){
+//                 printf("STR\n");
+//             }
+//         }
+//         printf("\n");
+//     }
 
-    return 0;
-}
+//     return 0;
+// }
 
 
 
