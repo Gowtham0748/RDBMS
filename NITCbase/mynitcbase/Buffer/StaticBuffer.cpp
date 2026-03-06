@@ -68,3 +68,26 @@ int StaticBuffer::getBufferNum(int blockNum) {
   // if block is not in the buffer
   return E_BLOCKNOTINBUFFER;
 }
+
+int StaticBuffer::setDirtyBit(int blockNum){
+    // find the buffer index corresponding to the block using getBufferNum().
+    int bufferIndex = StaticBuffer::getBufferNum(blockNum);
+    // if block is not present in the buffer (bufferNum = E_BLOCKNOTINBUFFER)
+    //     return E_BLOCKNOTINBUFFER
+    if(bufferIndex == E_BLOCKNOTINBUFFER){
+      return E_BLOCKNOTINBUFFER;
+    }
+    // if blockNum is out of bound (bufferNum = E_OUTOFBOUND)
+    //     return E_OUTOFBOUND
+    if(bufferIndex == E_OUTOFBOUND){
+      return E_OUTOFBOUND;
+    }else{
+      metainfo[bufferIndex].dirty = true;
+    }
+    // else
+    //     (the bufferNum is valid)
+    //     set the dirty bit of that buffer to true in metainfo
+
+    // return SUCCESS
+    return SUCCESS;
+}
