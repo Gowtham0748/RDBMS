@@ -135,7 +135,61 @@ OpenRelTable::OpenRelTable() {
   // set the value at AttrCacheTable::attrCache[ATTRCAT_RELID]
   AttrCacheTable :: attrCache[ATTRCAT_RELID] = head;
 
+
+  HeadInfo relCatHead;
+  relCatBlock.getHeader(&relCatHead);
+  bool inserted = false;
+  for(int k=0;k<relCatHead.numEntries&&!inserted;k++)
+  { Attribute record[RELCAT_NO_ATTRS];
+    relCatBlock.getRecord(record,k);
+    if(strcmp(record[RELCAT_REL_NAME_INDEX].sVal,"Students")==0)
+    { 
+      for(int i=2;i<MAX_OPEN;i++)
+      {
+        if(RelCacheTable::relCache[i]==nullptr)
+        {
+          struct RelCacheEntry relCacheEntryForStudent;
+          RelCacheTable::recordToRelCatEntry(record,&relCacheEntryForStudent.relCatEntry);
+          relCacheEntryForStudent.recId.block=RELCAT_BLOCK;
+          relCacheEntryForStudent.recId.slot=k;
+          RelCacheTable::relCache[i]=(struct RelCacheEntry*)malloc(sizeof(RelCacheEntry));
+          *(RelCacheTable::relCache[i])=relCacheEntryForStudent;
+  
+  
+          AttrCacheTable::attrCache[i]=nullptr;
+          AttrCacheEntry* relPtr=nullptr;
+          HeadInfo attrCatHead;
+          attrCatBlock.getHeader(&attrCatHead);
+          for(int j=0;j<attrCatHead.numEntries;j++)
+          {
+            Attribute catRecord[ATTRCAT_NO_ATTRS];
+            attrCatBlock.getRecord(catRecord,j);
+            if(strcmp(catRecord[ATTRCAT_REL_NAME_INDEX].sVal,"Students")==0)
+            {
+                AttrCacheEntry *temp=(struct AttrCacheEntry *)malloc(sizeof(AttrCacheEntry));
+                AttrCacheTable::recordToAttrCatEntry(catRecord,&temp->attrCatEntry);
+                temp->next=nullptr;
+                temp->recId.block=ATTRCAT_BLOCK;
+                temp->recId.slot=j;
+                if(AttrCacheTable::attrCache[i]==nullptr)
+                {
+                  AttrCacheTable::attrCache[i]=temp;
+                  relPtr=temp;
+                }
+                else{
+                  relPtr->next=temp;
+                  relPtr=temp;
+                }
+            }
+          }
+          inserted=true;
+          break;
+        }
+      } } }
+
+
 }
+
 
 
 
