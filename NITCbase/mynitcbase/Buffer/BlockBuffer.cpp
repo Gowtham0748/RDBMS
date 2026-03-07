@@ -123,25 +123,75 @@ int RecBuffer::getRecord(union Attribute *rec, int slotNum) {
 }
 
 
+// int BlockBuffer::loadBlockAndGetBufferPtr(unsigned char **buffPtr) {
+//   // check whether the block is already present in the buffer using StaticBuffer.getBufferNum()
+//   int bufferNum = StaticBuffer::getBufferNum(this->blockNum);
+
+//   if (bufferNum == E_BLOCKNOTINBUFFER) {
+//     bufferNum = StaticBuffer::getFreeBuffer(this->blockNum);
+
+//     if (bufferNum == E_OUTOFBOUND) {
+//       return E_OUTOFBOUND;
+//     }
+
+//     Disk::readBlock(StaticBuffer::blocks[bufferNum], this->blockNum);
+//   }
+
+//   // store the pointer to this buffer (blocks[bufferNum]) in *buffPtr
+//   *buffPtr = StaticBuffer::blocks[bufferNum];
+
+//   return SUCCESS;
+// }
+//<----stage 6----> changes
 int BlockBuffer::loadBlockAndGetBufferPtr(unsigned char **buffPtr) {
-  // check whether the block is already present in the buffer using StaticBuffer.getBufferNum()
-  int bufferNum = StaticBuffer::getBufferNum(this->blockNum);
 
-  if (bufferNum == E_BLOCKNOTINBUFFER) {
-    bufferNum = StaticBuffer::getFreeBuffer(this->blockNum);
+    /* check whether the block is already present in the buffer
+       using StaticBuffer.getBufferNum() */
+    int bufferNum = StaticBuffer::getBufferNum(this->blockNum);
 
-    if (bufferNum == E_OUTOFBOUND) {
-      return E_OUTOFBOUND;
+    // if present (!= E_BLOCKNOTINBUFFER)
+    if (bufferNum != E_BLOCKNOTINBUFFER) {
+
+        // set the timestamp of the corresponding buffer to 0 and increment the
+        // timestamps of all other occupied buffers in BufferMetaInfo.
+        for (int i = 0; i < BUFFER_CAPACITY; i++) {
+            if (StaticBuffer::metainfo[i].free==false) {
+                if (i == bufferNum)
+                    StaticBuffer::metainfo[i].timeStamp = 0;
+                else
+                    StaticBuffer::metainfo[i].timeStamp++;
+            }
+        }
+    }
+    else {
+        // get a free buffer using StaticBuffer.getFreeBuffer()
+        bufferNum = StaticBuffer::getFreeBuffer(this->blockNum);
+
+        // if the call returns E_OUTOFBOUND, return E_OUTOFBOUND here
+        if (bufferNum == E_OUTOFBOUND) {
+            return E_OUTOFBOUND;
+        }
+
+        // Read the block into the free buffer using readBlock()
+        Disk::readBlock(StaticBuffer::blocks[bufferNum], this->blockNum);
+
+        // update timestamps: new buffer → 0, others → +1
+        for (int i = 0; i < BUFFER_CAPACITY; i++) {
+            if (StaticBuffer::metainfo[i].free==false) {
+                if (i == bufferNum)
+                    StaticBuffer::metainfo[i].timeStamp = 0;
+                else
+                    StaticBuffer::metainfo[i].timeStamp++;
+            }
+        }
     }
 
-    Disk::readBlock(StaticBuffer::blocks[bufferNum], this->blockNum);
-  }
+    // store the pointer to this buffer (blocks[bufferNum]) in *buffPtr
+    *buffPtr = StaticBuffer::blocks[bufferNum];
 
-  // store the pointer to this buffer (blocks[bufferNum]) in *buffPtr
-  *buffPtr = StaticBuffer::blocks[bufferNum];
-
-  return SUCCESS;
+    return SUCCESS;
 }
+
 
 
 /* used to get the slotmap from a record block
