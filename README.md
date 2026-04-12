@@ -48,7 +48,6 @@ Each layer only talks to the one below it — a clean, real-world DBMS design.
 - [Usage](#-usage)
 - [NITCBase Documentation](#-nitcbase-documentation)
 - [Contributing](#-contributing)
-- [License](#-license)
 
 ---
 
