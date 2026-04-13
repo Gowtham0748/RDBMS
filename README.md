@@ -75,7 +75,7 @@ sudo apt-get install build-essential libreadline-dev git
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/hatim-s/DataBase-Management-System
+   git clone https://github.com/Gowtham0748/RDBMS
    ```
 
 2. Navigate to the project directory:
