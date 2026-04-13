@@ -106,21 +106,24 @@ NITCBase provides a custom command-line interface with SQL-like syntax for perfo
 
 ```
 -- Create and manage tables
-CREATE TABLE Students (RollNo NUMBER, Name STRING, CGPA NUMBER);
+CREATE TABLE Students (RollNo NUM, Name STR, CGPA NUM);
 OPEN TABLE Students;
 
 -- Insert and query data
 INSERT INTO Students VALUES (1, Alice, 9.5);
-SELECT * FROM Students WHERE CGPA >= 9.0 INTO TopStudents;
+SELECT * FROM Students INTO Temp WHERE CGPA >= 9.0 INTO TopStudents;
+
+-- Close table
+CLOSE TABLE Students;
 
 -- Indexing
 CREATE INDEX ON Students.RollNo;
 
 -- Join two relations
-SELECT * FROM Students JOIN Courses ON Students.RollNo = Courses.RollNo INTO Output;
+SELECT * FROM Students JOIN Courses INTO Temp WHERE Students.RollNo = Courses.RollNo;
 
 -- Run a batch script
-RUN myscript.run;
+RUN myscript.txt;
 ```
 
 > Note: NITCBase uses its own command syntax. Commands may look similar to SQL but are not standard SQL — for example, `SELECT` requires an `INTO` target relation.
