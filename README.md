@@ -1,4 +1,4 @@
-# 🗄️ NITCBase — Mini Relational Database Management System
+# 🗄️ NITCBase — Relational Database Management System
 
 <p align="center">
   <img src="https://img.shields.io/badge/Language-C%2B%2B-blue?style=for-the-badge&logo=cplusplus"/>
@@ -29,6 +29,9 @@ This project is designed for educational purposes, providing hands-on experience
 - 💬 &nbsp;**Custom command-line interface** with SQL-like syntax and batch script support
 - 📦 &nbsp;**12 stages** completed end-to-end
 
+---
+## Architecture Design
+![NITCBase Architecture](https://nitcbase.github.io/assets/images/HomepageFigure-3caab8b424c41a15c0958e84619dc2c0.svg)
 ---
 
 ## 🔄 How It Works
